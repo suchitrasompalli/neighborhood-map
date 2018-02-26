@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	 <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ 	<link rel="stylesheet" href="css/style.css">
+    <title>Neighborhood Map</title>
+  </head>
+  <body>
+  	<div class="container">
+      <div class="options-box">
+      	<div>
+        	<ul data-bind="foreach: locations">
+            	<li><button data-bind="text: $data.title, click: $parent.showMarker"></button></li>
+        	</ul>
+    	</div>
+      </div>
+      
+  	  <!-- A place for map. -->
+  	  <div id="map"></div>
+  	</div>
+
+  	<!-- Load the JS API ASYNCHRONOUSLY below.-->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&key=AIzaSyDAdBKCDHqXmSsJvPAKSR7N7Tuhtogr2VQ&v=3&callback=initMap">
+    </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/lib/knockout-3.2.0.js"></script>
+	<script src="js/script.js"></script>
+  </body>
+ </html>
