@@ -26,7 +26,8 @@ function initMap() {
   var self = this;
   this.locations = ko.observableArray([]);
   this.markers = [];
-  
+  // Style the markers a bit. This will be our listing marker icon.
+  var defaultIcon = makeMarkerIcon('0091ff');
   
   initialLocations.forEach(function(item, i) {
       self.locations.push(item);
@@ -37,17 +38,30 @@ function initMap() {
       var marker = new google.maps.Marker({
             position: position,
             title: title,
+            icon: defaultIcon,
             animation: google.maps.Animation.DROP,
             id: i
       });
       // Push the marker to our array of markers.
       self.markers.push(marker);
+      // Create an onclick event to open the large infowindow at each marker.
+      marker.addListener('click', function() {
+          populateInfoWindow(this, largeInfowindow);
+      });
+      // Two event listeners - one for mouseover, one for mouseout,
+      // to change the colors back and forth.
+      marker.addListener('mouseover', function() {
+          this.setIcon(highlightedIcon);
+      });
+      marker.addListener('mouseout', function() {
+          this.setIcon(defaultIcon);
+      });
   });
 
 // This function takes in a COLOR, and then creates a new marker
 // icon of that color. The icon will be 21 px wide by 34 high, have an origin
 // of 0, 0 and be anchored at 10, 34).
-  this.makeMarkerIcon = function(markerColor) {
+  function makeMarkerIcon(markerColor) {
     var markerImage = new google.maps.MarkerImage(
         'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
         '|40|_|%E2%80%A2',
@@ -67,8 +81,6 @@ function initMap() {
 ko.applyBindings(new ViewModel());
 
 
-
-  
 }
 
 

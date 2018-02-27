@@ -4,15 +4,23 @@
   	 <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
  	<link rel="stylesheet" href="css/style.css">
+
     <title>Neighborhood Map</title>
   </head>
   <body>
   	<div class="container">
       <div class="options-box">
+      	<h2>My Neighborhood</h2>
+      	
+      	<input type="text" id="myInput" onkeyup="" placeholder="Search for names.." title="Type in a name">
+
       	<div>
-        	<ul data-bind="foreach: locations">
-            	<li><button data-bind="text: $data.title, click: $parent.showMarker"></button></li>
+        	<ul id="myUL" data-bind="foreach: locations">
+            	<li><button data-bind="text: $data.title"></button></li>
         	</ul>
     	</div>
       </div>
