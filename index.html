@@ -20,7 +20,7 @@
 
       	<div>
         	<ul id="myUL" data-bind="foreach: locations">
-            	<li><button data-bind="text: $data.title"></button></li>
+            	<li><button data-bind="text: $data.title, click: $parent.openMarkerInfoWindow"></button></li>
         	</ul>
     	</div>
       </div>
