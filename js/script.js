@@ -23,6 +23,7 @@ function filterListView() {
 
         }
     }
+
 }
 
 // Create a map variable
@@ -41,17 +42,21 @@ function showMarkers(markers) {
 }
 
 
-// Init map with Coppell, Dallas as center. 
+// Init map with Coppell, Dallas as center.
 function initMap() {
 
-  // use a constructor to create a new map JS object. 
-  map = new google.maps.Map(document.getElementById('map'), {
+  try {
+    // use a constructor to create a new map JS object.
+    map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 32.954569, lng: -97.015008},
           zoom: 14
-  });
+    });
+  }
+  catch(error) {
+    alert("google map could not be loaded due to " + error);
+  }
 
 
- 
  var ViewModel = function() {
 
   var self = this;
@@ -63,42 +68,47 @@ function initMap() {
   // mouses over the marker.
   var highlightedIcon = makeMarkerIcon('FFFF24');
   var largeInfowindow = new google.maps.InfoWindow();
-  
+
   initialLocations.forEach(function(item, i) {
       self.locations.push(item);
       // Get the position from the location array.
       var position = item.location;
       var title = item.title;
       // Create a marker per location, and put into markers array.
-      var marker = new google.maps.Marker({
+      try {
+
+          var marker = new google.maps.Marker({
             position: position,
             title: title,
             icon: defaultIcon,
             animation: google.maps.Animation.DROP,
             id: i
-      });
-      // Push the marker to our array of markers.
-      self.markers.push(marker);
-      // Create an onclick event to open the large infowindow at each marker.
-      marker.addListener('click', function() {
-          populateInfoWindow(this, largeInfowindow);
-      });
-      // Two event listeners - one for mouseover, one for mouseout,
-      // to change the colors back and forth.
-      marker.addListener('mouseover', function() {
-          this.setIcon(highlightedIcon);
-      });
-      marker.addListener('mouseout', function() {
-          this.setIcon(defaultIcon);
-      });
-  });
-  
-  // show all the markers
-  //var displayedMarkers = showListings();
+          });
 
-// This function takes in a COLOR, and then creates a new marker
-// icon of that color. The icon will be 21 px wide by 34 high, have an origin
-// of 0, 0 and be anchored at 10, 34).
+          // Push the marker to our array of markers.
+          self.markers.push(marker);
+          // Create an onclick event to open the large infowindow at each marker.
+          marker.addListener('click', function() {
+            populateInfoWindow(this, largeInfowindow);
+          });
+          // Two event listeners - one for mouseover, one for mouseout,
+          // to change the colors back and forth.
+          marker.addListener('mouseover', function() {
+              this.setIcon(highlightedIcon);
+          });
+          marker.addListener('mouseout', function() {
+            this.setIcon(defaultIcon);
+          });
+    }
+    catch(error) {
+      alert("Markers failed to load "+ error);
+    }
+  });
+
+
+  // This function takes in a COLOR, and then creates a new marker
+  // icon of that color. The icon will be 21 px wide by 34 high, have an origin
+  // of 0, 0 and be anchored at 10, 34).
   function makeMarkerIcon(markerColor) {
     var markerImage = new google.maps.MarkerImage(
         'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
@@ -117,41 +127,13 @@ function populateInfoWindow(marker, infowindow) {
         // Check to make sure the infowindow is not already opened on this marker.
         if (infowindow.marker != marker) {
           // Clear the infowindow content to give the streetview time to load.
-          infowindow.setContent('');
+          infowindow.setContent(marker.title);
           infowindow.marker = marker;
           // Make sure the marker property is cleared if the infowindow is closed.
           infowindow.addListener('closeclick', function() {
             infowindow.marker = null;
           });
-          var streetViewService = new google.maps.StreetViewService();
-          var radius = 50;
-          // In case the status is OK, which means the pano was found, compute the
-          // position of the streetview image, then calculate the heading, then get a
-          // panorama from that and set the options
-          function getStreetView(data, status) {
-            if (status == google.maps.StreetViewStatus.OK) {
-              var nearStreetViewLocation = data.location.latLng;
-              var heading = google.maps.geometry.spherical.computeHeading(
-                nearStreetViewLocation, marker.position);
-                infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
-                var panoramaOptions = {
-                  position: nearStreetViewLocation,
-                  pov: {
-                    heading: heading,
-                    pitch: 30
-                  }
-                };
-              var panorama = new google.maps.StreetViewPanorama(
-                document.getElementById('pano'), panoramaOptions);
-            } else {
-              infowindow.setContent('<div>' + marker.title + '</div>' +
-                '<div>No Street View Found</div>');
-            }
-          }
-          // Use streetview service to get the closest streetview image within
-          // 50 meters of the markers position
-          streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-          // Open the infowindow on the correct marker.
+
           infowindow.open(map, marker);
         }
       }
@@ -165,9 +147,10 @@ function populateInfoWindow(marker, infowindow) {
   }
 
   this.openMarkerInfoWindow = function(location) {
-    var currentMarker = getMarker(self.markers, location.title);
-    populateInfoWindow(currentMarker, largeInfowindow);
-  }
+      var currentMarker = getMarker(self.markers, location.title);
+      populateInfoWindow(currentMarker, largeInfowindow);
+    };
+
 };
 
 var view_model = new ViewModel();
@@ -176,8 +159,3 @@ ko.applyBindings(view_model);
 
 
 }
-
-
-
-
-
