@@ -15,8 +15,8 @@
   	<div class="container">
       <div class="options-box">
       	<h2>My Neighborhood</h2>
-      	
-      	<input type="text" id="myInput" onkeyup="filterListView()" placeholder="Search for names.." title="Type in a name">
+
+      	<input id="filterInput" data-bind="value: filter, valueUpdate='keyup'" onchange="updateMarkers()" placeholder="Search for names.." title="Type in a name">
 
       	<div>
         	<ul id="myUL" data-bind="foreach: locations">
@@ -24,7 +24,7 @@
         	</ul>
     	</div>
       </div>
-      
+
   	  <!-- A place for map. -->
   	  <div id="map"></div>
   	</div>
@@ -33,7 +33,7 @@
 
     <script src="js/lib/knockout-3.2.0.js"></script>
 	<script src="js/script.js"></script>
-	
+
   	<!-- Load the JS API ASYNCHRONOUSLY below.-->
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&key=AIzaSyDAdBKCDHqXmSsJvPAKSR7N7Tuhtogr2VQ&v=3&callback=initMap">

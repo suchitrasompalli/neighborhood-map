@@ -1,4 +1,3 @@
-
 /* ======= Model ======= */
  var initialLocations = [
     {title: 'Palio\'s Pizza', location: {lat: 32.972557, lng: -96.994204}},
@@ -8,27 +7,9 @@
     {title: 'Cottonwood Creek Elementary School', location: {lat: 32.976391, lng: -97.007427}}
 ];
 
-function filterListView() {
-    var input, filter, ul, li, a, i;
-    input = document.getElementById("myInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myUL");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        button = li[i].getElementsByTagName("button")[0];
-        if (button.innerHTML.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-
-        }
-    }
-
-}
-
 // Create a map variable
 var map;
-
+var all_markers = [];
 
 // This function will loop through the markers array and display them all.
 function showMarkers(markers) {
@@ -36,11 +17,53 @@ function showMarkers(markers) {
   // Extend the boundaries of the map for each marker and display the marker
   for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(map);
+      toggleBounce(markers[i]);
       bounds.extend(markers[i].position);
   }
   map.fitBounds(bounds);
 }
+// This function will loop through the listings and hide them all.
+function hideMarkers(markers) {
+    for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+    }
+}
 
+function updateMarkers() {
+    hideMarkers(all_markers);
+    var value = document.getElementById("filterInput").value;
+    var currentMarkers = [];
+    var filter = value.toLowerCase();
+    if(!filter) {
+        currentMarkers = all_markers;
+    } else {
+        all_markers.forEach(function(marker) {
+            if (marker.title.toLowerCase().startsWith(filter)) {
+                currentMarkers.push(marker);
+           }
+       });
+    }
+    showMarkers(currentMarkers);
+}
+
+ function getMarker(markers, title) {
+    var match = markers.find(function(marker) {
+      return marker.title === title;
+    });
+    return match;
+  }
+
+ function toggleBounce(marker) {
+    if (marker.getAnimation() !== null) {
+        marker.setAnimation(null);
+    } else {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function() {
+          marker.setAnimation(null);
+        }, 1400);
+  }
+}
+ 
 
 // Init map with Coppell, Dallas as center.
 function initMap() {
@@ -60,21 +83,23 @@ function initMap() {
  var ViewModel = function() {
 
   var self = this;
-  this.locations = ko.observableArray([]);
-  this.markers = [];
-  // Style the markers a bit. This will be our listing marker icon.
+
+  this.filter = ko.observable("");
+
+  // Style the markers. This will be our listing marker icon.
   var defaultIcon = makeMarkerIcon('0091ff');
+
   // Create a "highlighted location" marker color for when the user
   // mouses over the marker.
   var highlightedIcon = makeMarkerIcon('FFFF24');
   var largeInfowindow = new google.maps.InfoWindow();
 
   initialLocations.forEach(function(item, i) {
-      self.locations.push(item);
+     // self.locations.push(item);
       // Get the position from the location array.
       var position = item.location;
       var title = item.title;
-      // Create a marker per location, and put into markers array.
+      // Create a marker per location, and put ino markers array.
       try {
 
           var marker = new google.maps.Marker({
@@ -86,7 +111,7 @@ function initMap() {
           });
 
           // Push the marker to our array of markers.
-          self.markers.push(marker);
+         all_markers.push(marker);
           // Create an onclick event to open the large infowindow at each marker.
           marker.addListener('click', function() {
             populateInfoWindow(this, largeInfowindow);
@@ -103,6 +128,21 @@ function initMap() {
     catch(error) {
       alert("Markers failed to load "+ error);
     }
+  });
+
+  this.locations = ko.computed(function() {
+      var filter = self.filter().toLowerCase();
+      if(!filter) {
+          return initialLocations;
+      } else {
+          var filtered_results = [];
+          initialLocations.forEach(function(location) {
+              if (location.title.toLowerCase().startsWith(filter)) {
+                  filtered_results.push(location);
+             }
+         });
+        return filtered_results;
+      }
   });
 
 
@@ -139,22 +179,17 @@ function populateInfoWindow(marker, infowindow) {
       }
 
 
-  function getMarker(markers, title) {
-    var found = markers.find(function(marker) {
-      return marker.title === title;
-    });
-    return found;
-  }
 
   this.openMarkerInfoWindow = function(location) {
-      var currentMarker = getMarker(self.markers, location.title);
+      var currentMarker = getMarker(all_markers, location.title);
       populateInfoWindow(currentMarker, largeInfowindow);
     };
+
 
 };
 
 var view_model = new ViewModel();
-showMarkers(view_model.markers);
+showMarkers(all_markers);
 ko.applyBindings(view_model);
 
 

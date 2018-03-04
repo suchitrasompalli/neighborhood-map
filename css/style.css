@@ -1,8 +1,8 @@
 * {
     box-sizing: border-box;
 }
-html, body 
-{ 
+html, body
+{
 	font-family: Arial, sans-serif;
     height: 100%;
     margin: 0;
@@ -24,7 +24,7 @@ button {
  	height: 100%;
  	margin-bottom:10px;
     position: relative;
-    
+
 }
 .options-box {
     background: #fff;
@@ -37,7 +37,7 @@ button {
     width: 25%;
     float:left;
 }
-#myInput {
+#filterInput {
   background-image: url('searchicon.png');
   background-position: 10px 12px;
   background-repeat: no-repeat;
@@ -97,6 +97,5 @@ button {
 		width:100%;
 		height: 100%
 	}
-	
-}
 
+}
