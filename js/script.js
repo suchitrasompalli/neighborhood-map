@@ -1,34 +1,36 @@
 /* ======= Model ======= */
  var initialLocations = [
-    {title: 'Palio\'s Pizza', location: {lat: 32.972557, lng: -96.994204}},
-    {title: 'Cici\'s Pizza', location: {lat: 32.968356, lng: -96.991926}},
-    {title: 'Walgreens', location: {lat: 32.977036, lng: -96.994309}},
-    {title: 'Sprouts supermarket', location: {lat: 32.970312, lng: -96.995428}},
-    {title: 'Cottonwood Creek Elementary School', location: {lat: 32.976391, lng: -97.007427}}
+    {title: 'Palio\'s Pizza Cafe', location: {lat: 32.972557, lng: -96.994204}, venueId: '4af04e34f964a52021db21e3'},
+    {title: 'Cici\'s Pizza', location: {lat: 32.968356, lng: -96.991926}, venueId: '4ba11085f964a520359437e3'},
+    {title: 'Walgreens', location: {lat: 32.977036, lng: -96.994309}, venueId: '4bec8b1675b2c9b662ab438d'},
+    {title: 'Sprouts supermarket', location: {lat: 32.970312, lng: -96.995428}, venueId: '4b993ac8f964a520ba6b35e3'},
+    {title: 'Cottonwood Creek Elementary School', location: {lat: 32.9764, lng: -97.0074}, venueId: '4c61a20279d1e21ea72fd415'}
 ];
 
 // Create a map variable
 var map;
 var all_markers = [];
 
-// This function will loop through the markers array and display them all.
+// This function will loop through any markers array and display them all.
 function showMarkers(markers) {
   var bounds = new google.maps.LatLngBounds();
   // Extend the boundaries of the map for each marker and display the marker
   for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(map);
-      toggleBounce(markers[i]);
+      toggleBounce(markers[i], 4);
       bounds.extend(markers[i].position);
   }
   map.fitBounds(bounds);
 }
-// This function will loop through the listings and hide them all.
+// This function will loop through markers and hide them all.
 function hideMarkers(markers) {
     for (var i = 0; i < markers.length; i++) {
           markers[i].setMap(null);
     }
 }
 
+// This function will apply filter the list of markers and update the map
+// with the new list of mappers.
 function updateMarkers() {
     hideMarkers(all_markers);
     var value = document.getElementById("filterInput").value;
@@ -46,6 +48,7 @@ function updateMarkers() {
     showMarkers(currentMarkers);
 }
 
+// Return the marker that matches the title.
  function getMarker(markers, title) {
     var match = markers.find(function(marker) {
       return marker.title === title;
@@ -53,17 +56,56 @@ function updateMarkers() {
     return match;
   }
 
- function toggleBounce(marker) {
+// Toggles the marker in the ui based on number of bounces required.
+ function toggleBounce(marker, number_of_bounces) {
+    // setting bounce_time so that bounce occurs only twice.
+    // bounce_time = Number of bounces required x 700 
+    var bounce_time = 700 x number_of_bounces;
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
     } else {
         marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function() {
           marker.setAnimation(null);
-        }, 1400);
+        }, bounce_time);
   }
 }
- 
+
+// This function takes in a COLOR, and then creates a new marker
+  // icon of that color. The icon will be 21 px wide by 34 high, have an origin
+  // of 0, 0 and be anchored at 10, 34).
+  function makeMarkerIcon(markerColor) {
+    var markerImage = new google.maps.MarkerImage(
+        'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
+        '|40|_|%E2%80%A2',
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(10, 34),
+        new google.maps.Size(21,34));
+        return markerImage;
+  }
+
+function getFourSquareData(venueId) {
+
+  var CLIENT_ID = "FGYXHLBLXZYPHXUPWZNCXYFLJQ5RW51D2P2HYSD4O43BBGOZ";
+  var CLIENT_SECRET = "HPC3VD5FI4LEFEJ4DSPR4MX32K2HZTC1IVMU2UXFOAN4OSMU";
+  var BASE_URL = "https://api.foursquare.com/v2/venues/";
+
+  var version = "&v=20180101";
+  var params = "?client_id="+ CLIENT_ID + "&client_secret=" + CLIENT_SECRET + version;
+
+  var url = BASE_URL + venueId + params;
+  console.log("url is "+url);
+
+  $.ajax({
+      url: url,
+      dataType: "json"
+  }).done(function(data) {
+      alert("success"+data);
+  }).fail(function(jqXHR, textStatus, errorThrown) {
+      alert("foursquare data not available! "+ textStatus);
+  });
+}
 
 // Init map with Coppell, Dallas as center.
 function initMap() {
@@ -99,6 +141,8 @@ function initMap() {
       // Get the position from the location array.
       var position = item.location;
       var title = item.title;
+      var venueId = item.venueId;
+
       // Create a marker per location, and put ino markers array.
       try {
 
@@ -106,6 +150,7 @@ function initMap() {
             position: position,
             title: title,
             icon: defaultIcon,
+            venueId : venueId,
             animation: google.maps.Animation.DROP,
             id: i
           });
@@ -146,19 +191,6 @@ function initMap() {
   });
 
 
-  // This function takes in a COLOR, and then creates a new marker
-  // icon of that color. The icon will be 21 px wide by 34 high, have an origin
-  // of 0, 0 and be anchored at 10, 34).
-  function makeMarkerIcon(markerColor) {
-    var markerImage = new google.maps.MarkerImage(
-        'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
-        '|40|_|%E2%80%A2',
-        new google.maps.Size(21, 34),
-        new google.maps.Point(0, 0),
-        new google.maps.Point(10, 34),
-        new google.maps.Size(21,34));
-        return markerImage;
-  }
 
 // This function populates the infowindow when the marker is clicked. We'll only allow
 // one infowindow which will open at the marker that is clicked, and populate based
@@ -173,7 +205,35 @@ function populateInfoWindow(marker, infowindow) {
           infowindow.addListener('closeclick', function() {
             infowindow.marker = null;
           });
-
+          var streetViewService = new google.maps.StreetViewService();
+          var radius = 50;
+          // In case the status is OK, which means the pano was found, compute the
+          // position of the streetview image, then calculate the heading, then get a
+          // panorama from that and set the options
+          function getStreetView(data, status) {
+            if (status == google.maps.StreetViewStatus.OK) {
+              var nearStreetViewLocation = data.location.latLng;
+              var heading = google.maps.geometry.spherical.computeHeading(
+                nearStreetViewLocation, marker.position);
+                infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+                var panoramaOptions = {
+                  position: nearStreetViewLocation,
+                  pov: {
+                    heading: heading,
+                    pitch: 30
+                  }
+                };
+              var panorama = new google.maps.StreetViewPanorama(
+                document.getElementById('pano'), panoramaOptions);
+            } else {
+              infowindow.setContent('<div>' + marker.title + '</div>' +
+                '<div>No Street View Found</div>');
+            }
+          }
+          // Use streetview service to get the closest streetview image within
+          // 50 meters of the markers position
+          streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+          getFourSquareData(marker.venueId);
           infowindow.open(map, marker);
         }
       }

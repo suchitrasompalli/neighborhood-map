@@ -47,7 +47,10 @@ button {
   border: 1px solid #ddd;
   margin-bottom: 12px;
 }
-
+#pano {
+        width: 200px;
+        height: 200px;
+}
 #myUL {
   list-style-type: none;
   padding: 0;
