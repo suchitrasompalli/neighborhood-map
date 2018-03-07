@@ -60,14 +60,14 @@ function updateMarkers() {
  function toggleBounce(marker, number_of_bounces) {
     // setting bounce_time so that bounce occurs only twice.
     // bounce_time = Number of bounces required x 700 
-    var bounce_time = 700 x number_of_bounces;
+    var bounce_time = 700 * number_of_bounces;
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
     } else {
         marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function() {
           marker.setAnimation(null);
-        }, bounce_time);
+        }, bounce_time); 
   }
 }
 
