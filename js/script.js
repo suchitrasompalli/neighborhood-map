@@ -1,4 +1,5 @@
 /* ======= Model ======= */
+// VenueId is required for each location so as to get data from Foursquare.
  var initialLocations = [
     {title: 'Palio\'s Pizza Cafe', location: {lat: 32.972557, lng: -96.994204}, venueId: '4af04e34f964a52021db21e3'},
     {title: 'Cici\'s Pizza', location: {lat: 32.968356, lng: -96.991926}, venueId: '4ba11085f964a520359437e3'},
@@ -22,6 +23,7 @@ function showMarkers(markers) {
   }
   map.fitBounds(bounds);
 }
+
 // This function will loop through markers and hide them all.
 function hideMarkers(markers) {
     for (var i = 0; i < markers.length; i++) {
@@ -29,7 +31,7 @@ function hideMarkers(markers) {
     }
 }
 
-// This function will apply filter the list of markers and update the map
+// This function will apply the filter to the list of markers and update the map
 // with the new list of mappers.
 function updateMarkers() {
     hideMarkers(all_markers);
@@ -95,13 +97,29 @@ function getFourSquareData(venueId) {
   var params = "?client_id="+ CLIENT_ID + "&client_secret=" + CLIENT_SECRET + version;
 
   var url = BASE_URL + venueId + params;
-  console.log("url is "+url);
+  
 
   $.ajax({
       url: url,
       dataType: "json"
   }).done(function(data) {
-      alert("success"+data);
+
+      var website_url = data.response.venue.url;
+      var phone_number = data.response.venue.contact.formattedPhone;
+      var address = data.response.venue.location.formattedAddress;
+
+      if (!website_url) {
+          $("#link").attr("href", data.response.venue.canonicalUrl);
+          $("#link").html(data.response.venue.canonicalUrl);
+      }
+      else {
+          $("#link").attr("href", website_url);
+          $("#link").html(website_url);
+      }
+
+      $("#phone").html(phone_number);
+      $("#address").html(address);
+
   }).fail(function(jqXHR, textStatus, errorThrown) {
       alert("foursquare data not available! "+ textStatus);
   });
@@ -215,7 +233,11 @@ function populateInfoWindow(marker, infowindow) {
               var nearStreetViewLocation = data.location.latLng;
               var heading = google.maps.geometry.spherical.computeHeading(
                 nearStreetViewLocation, marker.position);
-                infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+                infowindow.setContent('<div id="title">' + marker.title 
+                  + '</div><p>Website:&nbsp;<span><a href="" id="link"></a></span></p>'
+                  + '<p>Phone Number:&nbsp;<span id="phone">test</span></p>'
+                  + '<p>Address:&nbsp;<span id="address">test</span></p>'
+                  + '<p>Street view</p><div id="pano"></div>');
                 var panoramaOptions = {
                   position: nearStreetViewLocation,
                   pov: {
@@ -226,8 +248,11 @@ function populateInfoWindow(marker, infowindow) {
               var panorama = new google.maps.StreetViewPanorama(
                 document.getElementById('pano'), panoramaOptions);
             } else {
-              infowindow.setContent('<div>' + marker.title + '</div>' +
-                '<div>No Street View Found</div>');
+              infowindow.setContent('<div id="title">' + marker.title 
+                  + '</div><p>Website:&nbsp;<span><a href="" id="link"></a></span></p>'
+                  + '<p>Phone Number:&nbsp;<span id="phone"></span></p>'
+                  + '<p>Address:&nbsp;<span id="address"></span></p>'
+                  + '<p>No Street View found.</p>');
             }
           }
           // Use streetview service to get the closest streetview image within

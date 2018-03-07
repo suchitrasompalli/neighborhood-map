@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+
 }
 html, body
 {
@@ -17,6 +18,7 @@ button {
 	cursor:pointer;
 	width: 100%;
 	background-color: #eee;
+	color: blue;
 	text-align: left!important;
 }
 .container {
@@ -42,7 +44,8 @@ button {
   background-position: 10px 12px;
   background-repeat: no-repeat;
   width: 100%;
-  font-size: 16px;
+  font-size: 20px;
+  color:blue;
   padding: 12px 20px 12px 40px;
   border: 1px solid #ddd;
   margin-bottom: 12px;
@@ -57,26 +60,34 @@ button {
   margin: 0;
 }
 
-#myUL li a {
+#myUL li {
   border: 1px solid #ddd;
-  margin-top: -1px; /* Prevent double borders */
   background-color: #f6f6f6;
-  padding: 12px;
-  text-decoration: none;
-  font-size: 18px;
-  color: black;
-  display: block
+  font-size: 20px;
+  font-weight: bold;
+  word-spacing: 1px;
+  margin-top: -1px;
+
 }
 
 #myUL li a:hover:not(.header) {
   background-color: #eee;
 }
+
 #map {
    width: 75%;
    float:left;
    height:100%;
 }
 
+#title {
+	color: black;
+	font-size: 1vw;
+	font-weight: bold;
+}
+p {
+	font-weight: bold;
+}
 @media(max-width: 600px) {
 	.options-box {
     	background: #fff;
@@ -92,8 +103,8 @@ button {
 		position:absolute;
 		width:100%;
 		margin-top:0px;
- 	height: 100%;
- 	margin-bottom:10px;
+ 		height: 100%;
+ 		margin-bottom:10px;
 	}
 
 	#map {
