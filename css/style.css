@@ -9,9 +9,7 @@ html, body
     margin: 0;
     padding: 0;
 }
-h2 {
-	color:blue;
-}
+
 button {
 	border:1px solid #ddd;
 	font:inherit;
@@ -44,14 +42,15 @@ button {
 }
 
 #filterInput {
-  background-image: url('searchicon.png');
-  background-position: 10px 12px;
+  background-image: url('filter.png');
+  background-position: 350px 12px;
   background-repeat: no-repeat;
   width: 100%;
   font-size: 20px;
   color:blue;
   padding: 12px 20px 12px 40px;
   border: 1px solid #ddd;
+  margin-top: 2vw;
   margin-bottom: 12px;
 }
 #pano {
@@ -95,6 +94,17 @@ button {
 .label {
 	color: blue;
 	font-weight: bold;
+}
+.header {
+	color: blue;
+	font-weight: bolder;
+	font-size:1.2vw;
+	margin-top:1vw;
+}
+.hamburger {
+	margin-left:10vw;
+	font-size:30px;
+	cursor:pointer;
 }
 .bold {
 	font-weight: bold;

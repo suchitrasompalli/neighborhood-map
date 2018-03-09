@@ -13,10 +13,14 @@
   </head>
   <body>
   	<div class="container">
+  		
       <div class="options-box">
-      	<h2>My Neighborhood</h2>
+      	<div class="header">
+      		<span>My Neighborhood</span>
+      		<span class="hamburger" onclick="openNav()">&#9776;</span>
+      	</div>
 
-      	<input id="filterInput" data-bind="value: filter, valueUpdate='keyup'" onchange="updateMarkers()" placeholder="Search for names.." title="Type in a name">
+      	<input id="filterInput" data-bind="value: filter, valueUpdate='keyup'" onchange="updateMarkers()" placeholder="Filter for names.." title="Type in a name">
 
       	<div>
         	<ul id="myUL" data-bind="foreach: locations">
