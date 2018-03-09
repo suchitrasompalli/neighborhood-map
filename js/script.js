@@ -12,6 +12,7 @@
 var map;
 var all_markers = [];
 
+
 // This function will loop through any markers array and display them all.
 function showMarkers(markers) {
   var bounds = new google.maps.LatLngBounds();
@@ -61,7 +62,7 @@ function updateMarkers() {
 // Toggles the marker in the ui based on number of bounces required.
  function toggleBounce(marker, number_of_bounces) {
     // setting bounce_time so that bounce occurs only twice.
-    // bounce_time = Number of bounces required x 700 
+    // bounce_time = Number of bounces required x 700
     var bounce_time = 700 * number_of_bounces;
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
@@ -69,7 +70,7 @@ function updateMarkers() {
         marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function() {
           marker.setAnimation(null);
-        }, bounce_time); 
+        }, bounce_time);
   }
 }
 
@@ -87,7 +88,7 @@ function updateMarkers() {
         return markerImage;
   }
 
-function getFourSquareData(venueId) {
+function getFourSquareData(marker) {
 
   var CLIENT_ID = "FGYXHLBLXZYPHXUPWZNCXYFLJQ5RW51D2P2HYSD4O43BBGOZ";
   var CLIENT_SECRET = "HPC3VD5FI4LEFEJ4DSPR4MX32K2HZTC1IVMU2UXFOAN4OSMU";
@@ -96,34 +97,22 @@ function getFourSquareData(venueId) {
   var version = "&v=20180101";
   var params = "?client_id="+ CLIENT_ID + "&client_secret=" + CLIENT_SECRET + version;
 
-  var url = BASE_URL + venueId + params;
-  
+  var url = BASE_URL + marker.venueId + params;
+
 
   $.ajax({
       url: url,
       dataType: "json"
   }).done(function(data) {
-
-      var website_url = data.response.venue.url;
-      var phone_number = data.response.venue.contact.formattedPhone;
-      var address = data.response.venue.location.formattedAddress;
-
-      if (!website_url) {
-          $("#link").attr("href", data.response.venue.canonicalUrl);
-          $("#link").html(data.response.venue.canonicalUrl);
-      }
-      else {
-          $("#link").attr("href", website_url);
-          $("#link").html(website_url);
-      }
-
-      $("#phone").html(phone_number);
-      $("#address").html(address);
-
+      marker.infoWindowData = data;
   }).fail(function(jqXHR, textStatus, errorThrown) {
-      alert("foursquare data not available! "+ textStatus);
+      alert("Failed to get data from foursquare."+ textStatus)
   });
+
+  
 }
+
+
 
 // Init map with Coppell, Dallas as center.
 function initMap() {
@@ -152,6 +141,7 @@ function initMap() {
   // Create a "highlighted location" marker color for when the user
   // mouses over the marker.
   var highlightedIcon = makeMarkerIcon('FFFF24');
+
   var largeInfowindow = new google.maps.InfoWindow();
 
   initialLocations.forEach(function(item, i) {
@@ -160,7 +150,7 @@ function initMap() {
       var position = item.location;
       var title = item.title;
       var venueId = item.venueId;
-
+      
       // Create a marker per location, and put ino markers array.
       try {
 
@@ -168,22 +158,28 @@ function initMap() {
             position: position,
             title: title,
             icon: defaultIcon,
-            venueId : venueId,
+            venueId: venueId,
             animation: google.maps.Animation.DROP,
             id: i
           });
 
+          // preload the content we need in information window from four square.
+          getFourSquareData(marker);
+
           // Push the marker to our array of markers.
          all_markers.push(marker);
+
           // Create an onclick event to open the large infowindow at each marker.
           marker.addListener('click', function() {
             populateInfoWindow(this, largeInfowindow);
           });
+
           // Two event listeners - one for mouseover, one for mouseout,
           // to change the colors back and forth.
           marker.addListener('mouseover', function() {
               this.setIcon(highlightedIcon);
           });
+
           marker.addListener('mouseout', function() {
             this.setIcon(defaultIcon);
           });
@@ -208,60 +204,50 @@ function initMap() {
       }
   });
 
-
-
+  
 // This function populates the infowindow when the marker is clicked. We'll only allow
 // one infowindow which will open at the marker that is clicked, and populate based
 // on that markers position.
 function populateInfoWindow(marker, infowindow) {
-        // Check to make sure the infowindow is not already opened on this marker.
-        if (infowindow.marker != marker) {
-          // Clear the infowindow content to give the streetview time to load.
-          infowindow.setContent(marker.title);
-          infowindow.marker = marker;
-          // Make sure the marker property is cleared if the infowindow is closed.
-          infowindow.addListener('closeclick', function() {
+    // Check to make sure the infowindow is not already opened on this marker.
+    if (infowindow.marker != marker) {
+          
+        infowindow.marker = marker;
+        // Make sure the marker property is cleared if the infowindow is closed.
+        infowindow.addListener('closeclick', function() {
             infowindow.marker = null;
-          });
-          var streetViewService = new google.maps.StreetViewService();
-          var radius = 50;
-          // In case the status is OK, which means the pano was found, compute the
-          // position of the streetview image, then calculate the heading, then get a
-          // panorama from that and set the options
-          function getStreetView(data, status) {
-            if (status == google.maps.StreetViewStatus.OK) {
-              var nearStreetViewLocation = data.location.latLng;
-              var heading = google.maps.geometry.spherical.computeHeading(
-                nearStreetViewLocation, marker.position);
-                infowindow.setContent('<div id="title">' + marker.title 
-                  + '</div><p>Website:&nbsp;<span><a href="" id="link"></a></span></p>'
-                  + '<p>Phone Number:&nbsp;<span id="phone">test</span></p>'
-                  + '<p>Address:&nbsp;<span id="address">test</span></p>'
-                  + '<p>Street view</p><div id="pano"></div>');
-                var panoramaOptions = {
-                  position: nearStreetViewLocation,
-                  pov: {
-                    heading: heading,
-                    pitch: 30
-                  }
-                };
-              var panorama = new google.maps.StreetViewPanorama(
-                document.getElementById('pano'), panoramaOptions);
-            } else {
-              infowindow.setContent('<div id="title">' + marker.title 
-                  + '</div><p>Website:&nbsp;<span><a href="" id="link"></a></span></p>'
-                  + '<p>Phone Number:&nbsp;<span id="phone"></span></p>'
-                  + '<p>Address:&nbsp;<span id="address"></span></p>'
-                  + '<p>No Street View found.</p>');
-            }
-          }
-          // Use streetview service to get the closest streetview image within
-          // 50 meters of the markers position
-          streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-          getFourSquareData(marker.venueId);
-          infowindow.open(map, marker);
+        });
+
+        var website_url = marker.infoWindowData.response.venue.url;
+        var phone_number = marker.infoWindowData.response.venue.contact.formattedPhone;
+        var street = marker.infoWindowData.response.venue.location.address;
+        var city = marker.infoWindowData.response.venue.location.city;
+        var state = marker.infoWindowData.response.venue.location.state;
+        var postalCode = marker.infoWindowData.response.venue.location.postalCode;
+        var country = marker.infoWindowData.response.venue.location.country;
+
+        if (!website_url) {
+            website_url = marker.infoWindowData.response.venue.canonicalUrl;
         }
+
+        if (!phone_number) {
+          phone_number = "Phone number not found.";
+        }
+
+        var content = '<div id="title">' + marker.title +
+          '</div><div><span class="label">Website:&nbsp;</span><span><a class="bold" href="' + 
+           website_url +'">' + website_url + '</a></span></div>' +
+          '<p><span class="label">Phone Number:&nbsp;</span><span>' + phone_number + '</span></p>' +
+          '<p class="label">Address:</p>' +
+          '<p class="address">'+ street + '</p>' +
+          '<p class="address">' + city + ', ' + state + ' ' + postalCode + '</p>' +
+          '<p class="address">'+ country + '</p>';
+
+      
+        infowindow.setContent(content);
+        infowindow.open(map, marker);
       }
+  }
 
 
 

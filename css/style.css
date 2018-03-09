@@ -39,6 +39,10 @@ button {
     width: 25%;
     float:left;
 }
+.address {
+	margin-left: 2vw;
+}
+
 #filterInput {
   background-image: url('searchicon.png');
   background-position: 10px 12px;
@@ -81,9 +85,24 @@ button {
 }
 
 #title {
-	color: black;
+	color: blue;
 	font-size: 1vw;
 	font-weight: bold;
+	margin-top:1vw;
+	text-align: center;
+	margin-bottom: 1vw;
+}
+.label {
+	color: blue;
+	font-weight: bold;
+}
+.bold {
+	font-weight: bold;
+}
+.gm-style-iw {
+	background-color: #F0F8FF;
+	margin:0px;
+	padding:0px;
 }
 p {
 	font-weight: bold;
