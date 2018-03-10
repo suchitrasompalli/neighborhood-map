@@ -14,12 +14,12 @@
   <body>
   	<div class="container">
   	  <div class="header">
-  	  		<span class="hamburger" onclick="toggleListView()">&#9776;</span>
+  	  		<span class="hamburger" onclick="toggleDisplaySettings()">&#9776;</span>
       		<span class="header-title">My Neighborhood Map</span>
       </div>
 
       <div id="listView">
-      
+
       	<input id="filterInput" data-bind="value: filter, valueUpdate='keyup'" onchange="updateMarkers()" placeholder="Filter for names.." title="Type in a name">
 
       	<div>
@@ -30,10 +30,9 @@
       </div>
 
   	  <!-- A place for map. -->
-  	  <div id="map"></div>
+  	  <div id="map" class="map-margin-default"></div>
 
-  	 <div class="footer">Copyright &copy; <span id="year"></span> Suchitra Sompalli</div>
-
+  	   <div class="footer">Copyright &copy; <span id="year"></span> Suchitra Sompalli</div>
   	</div>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

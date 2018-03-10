@@ -8,6 +8,7 @@ html, body
     height: 100%;
     margin: 0;
     padding: 0;
+    overflow:auto;
 }
 
 button {
@@ -22,12 +23,35 @@ button {
 .container {
 	margin-top:0px;
  	height: 100%;
- 	margin-bottom:10px;
+ 	//margin-bottom:10px;
     position: relative;
-
+    width: 100%;
+    background: #262626;
+    overflow-x:hidden;
+}
+.header {
+	color: blue;
+	font-weight: bolder;
+	font-size:30px;
+	background: #262626;
+	margin-top:0px;
+	height:60px;
+    width:100%;
+}
+.header-title {
+	margin-left: 40%;
+	padding-top:10px;
+	margin-bottom:10px;
+}
+.hamburger {
+	margin-left:1vw;
+	font-size:30px;
+	cursor:pointer;
+	padding-top:10px;
+	margin-bottom:10px;
 }
 #listView {
-	position:fixed;
+	position:absolute;
 	display: block;
 	z-index: 1;
     background: #999999;
@@ -82,12 +106,18 @@ button {
 }
 
 #map {
+   position:absolute;
    width: 100%;
    float:left;
    height:100%;
-   //margin-left:350px;
    border-top: 1px solid #999;
    border-bottom: 1px solid #999;
+}
+.map-margin-default {
+     margin-left:350px;
+}
+.map-margin-full {
+    margin-left: 0px;
 }
 
 #title {
@@ -102,24 +132,7 @@ button {
 	color: blue;
 	font-weight: bold;
 }
-.header {
-	color: blue;
-	font-weight: bolder;
-	font-size:30px;
-	background: #262626;
-}
-.header-title {
-	margin-left: 40%;
-	margin-top:10px;
-	margin-bottom:10px;
-}
-.hamburger {
-	margin-left:1vw;
-	font-size:30px;
-	cursor:pointer;
-	margin-top:10px;
-	margin-bottom:10px;
-}
+
 .bold {
 	font-weight: bold;
 }
@@ -138,7 +151,7 @@ p {
 }
 
 @media(max-width: 600px) {
-	
+
 	.container {
 		position:absolute;
 		width:100%;

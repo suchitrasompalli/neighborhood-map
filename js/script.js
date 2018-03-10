@@ -110,16 +110,22 @@ function getFourSquareData(marker) {
       alert("Failed to get data from foursquare for "+ marker.title + " due to " +textStatus);
   });
 
-  
+
 }
 
-function toggleListView() {
-    var view = document.getElementById("listView");
+function toggleDisplaySettings() {
+    var view = document.getElementById('listView');
     if (view.style.display === "none") {
         view.style.display = "block";
-    } else {
-        view.style.display = "none";
+        $("#map").removeClass("map-margin-full");
+        $("#map").addClass("map-margin-default");
     }
+    else {
+        view.style.display = "none";
+        $("#map").removeClass("map-margin-default");
+        $("#map").addClass("map-margin-full");
+    }
+
 }
 
 // Init map with Coppell, Dallas as center.
@@ -158,7 +164,7 @@ function initMap() {
       var position = item.location;
       var title = item.title;
       var venueId = item.venueId;
-      
+
       // Create a marker per location, and put ino markers array.
       try {
 
@@ -172,7 +178,7 @@ function initMap() {
           });
 
           // preload the content we need in information window from four square.
-         
+
          //TODO: Uncomment for later getFourSquareData(marker);
 
           // Push the marker to our array of markers.
@@ -213,14 +219,14 @@ function initMap() {
       }
   });
 
-  
+
 // This function populates the infowindow when the marker is clicked. We'll only allow
 // one infowindow which will open at the marker that is clicked, and populate based
 // on that markers position.
 function populateInfoWindow(marker, infowindow) {
     // Check to make sure the infowindow is not already opened on this marker.
     if (infowindow.marker != marker) {
-          
+
         infowindow.marker = marker;
         // Make sure the marker property is cleared if the infowindow is closed.
         infowindow.addListener('closeclick', function() {
@@ -245,7 +251,7 @@ function populateInfoWindow(marker, infowindow) {
           }
 
           content = '<div id="title">' + marker.title +
-          '</div><div><span class="label">Website:&nbsp;</span><span><a class="bold" href="' + 
+          '</div><div><span class="label">Website:&nbsp;</span><span><a class="bold" href="' +
            website_url +'">' + website_url + '</a></span></div>' +
           '<p><span class="label">Phone Number:&nbsp;</span><span>' + phone_number + '</span></p>' +
           '<p class="label">Address:</p>' +
@@ -256,7 +262,7 @@ function populateInfoWindow(marker, infowindow) {
         else {
           content = '<div id="title">' + marker.title + '</div><div>Could not load additional data from foursquare.</div>';
         }
-      
+
         infowindow.setContent(content);
         infowindow.open(map, marker);
       }
