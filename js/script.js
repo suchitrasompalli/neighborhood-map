@@ -102,17 +102,25 @@ function getFourSquareData(marker) {
 
   $.ajax({
       url: url,
+      cache: true,
       dataType: "json"
   }).done(function(data) {
       marker.infoWindowData = data;
   }).fail(function(jqXHR, textStatus, errorThrown) {
-      alert("Failed to get data from foursquare."+ textStatus)
+      alert("Failed to get data from foursquare for "+ marker.title + " due to " +textStatus);
   });
 
   
 }
 
-
+function toggleListView() {
+    var view = document.getElementById("listView");
+    if (view.style.display === "none") {
+        view.style.display = "block";
+    } else {
+        view.style.display = "none";
+    }
+}
 
 // Init map with Coppell, Dallas as center.
 function initMap() {
@@ -164,7 +172,8 @@ function initMap() {
           });
 
           // preload the content we need in information window from four square.
-          getFourSquareData(marker);
+         
+         //TODO: Uncomment for later getFourSquareData(marker);
 
           // Push the marker to our array of markers.
          all_markers.push(marker);
@@ -217,24 +226,25 @@ function populateInfoWindow(marker, infowindow) {
         infowindow.addListener('closeclick', function() {
             infowindow.marker = null;
         });
+        var content = "";
+        if (marker.infoWindowData) {
+          var website_url = marker.infoWindowData.response.venue.url;
+          var phone_number = marker.infoWindowData.response.venue.contact.formattedPhone;
+          var street = marker.infoWindowData.response.venue.location.address;
+          var city = marker.infoWindowData.response.venue.location.city;
+          var state = marker.infoWindowData.response.venue.location.state;
+          var postalCode = marker.infoWindowData.response.venue.location.postalCode;
+          var country = marker.infoWindowData.response.venue.location.country;
 
-        var website_url = marker.infoWindowData.response.venue.url;
-        var phone_number = marker.infoWindowData.response.venue.contact.formattedPhone;
-        var street = marker.infoWindowData.response.venue.location.address;
-        var city = marker.infoWindowData.response.venue.location.city;
-        var state = marker.infoWindowData.response.venue.location.state;
-        var postalCode = marker.infoWindowData.response.venue.location.postalCode;
-        var country = marker.infoWindowData.response.venue.location.country;
-
-        if (!website_url) {
+          if (!website_url) {
             website_url = marker.infoWindowData.response.venue.canonicalUrl;
-        }
+          }
 
-        if (!phone_number) {
-          phone_number = "Phone number not found.";
-        }
+          if (!phone_number) {
+            phone_number = "Phone number not found.";
+          }
 
-        var content = '<div id="title">' + marker.title +
+          content = '<div id="title">' + marker.title +
           '</div><div><span class="label">Website:&nbsp;</span><span><a class="bold" href="' + 
            website_url +'">' + website_url + '</a></span></div>' +
           '<p><span class="label">Phone Number:&nbsp;</span><span>' + phone_number + '</span></p>' +
@@ -242,7 +252,10 @@ function populateInfoWindow(marker, infowindow) {
           '<p class="address">'+ street + '</p>' +
           '<p class="address">' + city + ', ' + state + ' ' + postalCode + '</p>' +
           '<p class="address">'+ country + '</p>';
-
+        }
+        else {
+          content = '<div id="title">' + marker.title + '</div><div>Could not load additional data from foursquare.</div>';
+        }
       
         infowindow.setContent(content);
         infowindow.open(map, marker);
@@ -263,5 +276,7 @@ var view_model = new ViewModel();
 showMarkers(all_markers);
 ko.applyBindings(view_model);
 
+// Put in the year for copyright footer.
+$("#year").html(new Date().getFullYear());
 
 }
