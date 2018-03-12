@@ -14,7 +14,7 @@ Knockout and jQuery javascript libraries are used.
 ## Attributions
 
 * [w3schools](https://www.w3schools.com)
-*          [Github](https://github.com/udacity/ud864/blob/master/Project_Code10DisplayingRoutesDirectionsService.html)
+* [Github](https://github.com/udacity/ud864/blob/master/Project_Code10DisplayingRoutesDirectionsService.html)
 
 *    <http://en.marnoto.com/2014/09/5-formas-de-personalizar-infowindow.html>
 
