@@ -1,6 +1,7 @@
+/*jshint esversion: 6 */
 /* ======= Model ======= */
 // VenueId is required for each location so as to get data from Foursquare.
- var initialLocations = [
+ const initialLocations = [
     {title: 'Palio\'s Pizza Cafe', location: {lat: 32.972557, lng: -96.994204}, venueId: '4af04e34f964a52021db21e3'},
     {title: 'Cici\'s Pizza', location: {lat: 32.968356, lng: -96.991926}, venueId: '4ba11085f964a520359437e3'},
     {title: 'Walgreens', location: {lat: 32.977036, lng: -96.994309}, venueId: '4bec8b1675b2c9b662ab438d'},
@@ -9,15 +10,15 @@
 ];
 
 // Create a map variable
-var map;
-var all_markers = [];
+let map;
+const all_markers = [];
 
 
 // This function will loop through any markers array and display them all.
 function showMarkers(markers) {
-    var bounds = new google.maps.LatLngBounds();
+    let bounds = new google.maps.LatLngBounds();
     // Extend the boundaries of the map for each marker and display the marker
-    for (var i = 0; i < markers.length; i++) {
+    for (let i = 0; i < markers.length; i++) {
         markers[i].setMap(map);
         toggleBounce(markers[i], 4);
         bounds.extend(markers[i].position);
@@ -27,18 +28,18 @@ function showMarkers(markers) {
 
 // This function will loop through markers and hide them all.
 function hideMarkers(markers) {
-    for (var i = 0; i < markers.length; i++) {
+    for (let i = 0; i < markers.length; i++) {
           markers[i].setMap(null);
     }
 }
 
-// This function will apply the filter to the list of markers and update the map
-// with the new list of mappers.
+/* This function will apply the filter to the list of markers and update the map
+ with the new list of mappers. */
 function updateMarkers() {
     hideMarkers(all_markers);
-    var value = document.getElementById("filterInput").value;
-    var currentMarkers = [];
-    var filter = value.toLowerCase();
+    let value = document.getElementById("filterInput").value;
+    let currentMarkers = [];
+    let filter = value.toLowerCase();
     if(!filter) {
         currentMarkers = all_markers;
     } else {
@@ -53,7 +54,7 @@ function updateMarkers() {
 
 // Return the marker that matches the title.
 function getMarker(markers, title) {
-    var match = markers.find(function(marker) {
+    let match = markers.find(function(marker) {
         return marker.title === title;
     });
     return match;
@@ -63,7 +64,7 @@ function getMarker(markers, title) {
 function toggleBounce(marker, number_of_bounces) {
     // setting bounce_time so that bounce occurs only twice.
     // bounce_time = (Number of bounces required x 700)
-    var bounce_time = 700 * number_of_bounces;
+    let bounce_time = 700 * number_of_bounces;
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
     } else {
@@ -74,11 +75,11 @@ function toggleBounce(marker, number_of_bounces) {
     }
 }
 
-// This function takes in a COLOR, and then creates a new marker
-// icon of that color. The icon will be 21 px wide by 34 high, have an origin
-// of 0, 0 and be anchored at 10, 34).
+/* This function takes in a COLOR, and then creates a new marker
+ icon of that color. The icon will be 21 px wide by 34 high, have an origin
+ of 0, 0 and be anchored at 10, 34). */
 function makeMarkerIcon(markerColor) {
-    var markerImage = new google.maps.MarkerImage(
+    let markerImage = new google.maps.MarkerImage(
         'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
         '|40|_|%E2%80%A2',
         new google.maps.Size(21, 34),
@@ -90,14 +91,14 @@ function makeMarkerIcon(markerColor) {
 
 // Make a Ajax call to FourSquare and get unique information for each marker.
 function getFourSquareData(marker) {
-    var CLIENT_ID = "FGYXHLBLXZYPHXUPWZNCXYFLJQ5RW51D2P2HYSD4O43BBGOZ";
-    var CLIENT_SECRET = "HPC3VD5FI4LEFEJ4DSPR4MX32K2HZTC1IVMU2UXFOAN4OSMU";
-    var BASE_URL = "https://api.foursquare.com/v2/venues/";
+    const CLIENT_ID = "FGYXHLBLXZYPHXUPWZNCXYFLJQ5RW51D2P2HYSD4O43BBGOZ";
+    const CLIENT_SECRET = "HPC3VD5FI4LEFEJ4DSPR4MX32K2HZTC1IVMU2UXFOAN4OSMU";
+    const BASE_URL = "https://api.foursquare.com/v2/venues/";
 
-    var version = "&v=20180101";
-    var params = "?client_id="+ CLIENT_ID + "&client_secret=" + CLIENT_SECRET + version;
+    const version = "&v=20180101";
+    const params = "?client_id="+ CLIENT_ID + "&client_secret=" + CLIENT_SECRET + version;
 
-    var url = BASE_URL + marker.venueId + params;
+    let url = BASE_URL + marker.venueId + params;
     $.ajax({
         url: url,
         cache: true,
@@ -111,7 +112,7 @@ function getFourSquareData(marker) {
 
 // When the hamburger icon is clicked on the UI, hide/display the list view and also change the map left margin.
 function toggleDisplaySettings() {
-    var view = document.getElementById('listView');
+    let view = document.getElementById('listView');
     if (view.style.display === "none") {
         view.style.display = "block";
         $("#map").removeClass("map-margin-full");
@@ -123,10 +124,12 @@ function toggleDisplaySettings() {
         $("#map").addClass("map-margin-full");
     }
 }
+
+// Checks if storage (localStorage or SessionStorage) is available to use.
 function storageAvailable(type) {
     try {
-        var storage = window[type];
-        var x = '__storage_test__';
+        let storage = window[type];
+        let x = '__storage_test__';
         storage.setItem(x, x);
         storage.getItem(x,x);
         storage.removeItem(x);
@@ -139,75 +142,227 @@ function storageAvailable(type) {
 
 // Call back function that inititializes the map with Coppell, Dallas as center.
 function initMap() {
-    // Create a styles array to use with the map.
-    var styles = [
-                {
-                  featureType: 'water',
-                  stylers: [
-                    { color: '#19a0d8' }
-                  ]
-                },{
-                  featureType: 'administrative',
-                  elementType: 'labels.text.stroke',
-                  stylers: [
-                    { color: '#ffffff' },
-                    { weight: 6 }
-                  ]
-                },{
-                  featureType: 'administrative',
-                  elementType: 'labels.text.fill',
-                  stylers: [
-                    { color: '#e85113' }
-                  ]
-                },{
-                  featureType: 'road.highway',
-                  elementType: 'geometry.stroke',
-                  stylers: [
-                    { color: '#efe9e4' },
-                    { lightness: -40 }
-                  ]
-                },{
-                  featureType: 'transit.station',
-                  stylers: [
-                    { weight: 9 },
-                    { hue: '#e85113' }
-                  ]
-                },{
-                  featureType: 'road.highway',
-                  elementType: 'labels.icon',
-                  stylers: [
-                    { visibility: 'off' }
-                  ]
-                },{
-                  featureType: 'water',
-                  elementType: 'labels.text.stroke',
-                  stylers: [
-                    { lightness: 100 }
-                  ]
-                },{
-                  featureType: 'water',
-                  elementType: 'labels.text.fill',
-                  stylers: [
-                    { lightness: -100 }
-                  ]
-                },{
-                  featureType: 'poi',
-                  elementType: 'geometry',
-                  stylers: [
-                    { visibility: 'on' },
-                    { color: '#f0e4d3' }
-                  ]
-                },{
-                  featureType: 'road.highway',
-                  elementType: 'geometry.fill',
-                  stylers: [
-                    { color: '#efe9e4' },
-                    { lightness: -25 }
-                  ]
-                }
-      ];
 
-      try {
+    // Create a styles array to use with the map. The code has been customized from one of the styles thas
+    // was available on Snazzy Maps.
+    let styles = [
+        {
+            "featureType": "administrative",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#444444"
+                }
+            ]
+        },
+        {
+        "featureType": "administrative.neighborhood",
+        "elementType": "labels.text",
+        "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.neighborhood",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "visibility": "on"
+                },
+                {
+                    "weight": "4.29"
+                },
+                {
+                    "hue": "#ff0043"
+                }
+            ]
+        },
+        {
+            "featureType": "landscape",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "color": "#f2f2f2"
+                }
+            ]
+        },
+        {
+            "featureType": "landscape.man_made",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "landscape.natural",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.attraction",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.business",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.government",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.medical",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.school",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "saturation": -100
+                },
+                {
+                    "lightness": 45
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "simplified"
+                }
+            ]
+        },
+        {
+            "featureType": "road.arterial",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "road.arterial",
+            "elementType": "labels.icon",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                },
+                {
+                    "hue": "#ff0030"
+                }
+            ]
+        },
+        {
+            "featureType": "transit",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "transit.station.airport",
+            "elementType": "labels",
+            "stylers": [
+                {
+                "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "color": "#46bcec"
+                },
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        }
+
+    ];
+
+    try {
           // use a constructor to create a new map JS object.
           map = new google.maps.Map(document.getElementById('map'), {
                 center: {lat: 32.954569, lng: -97.015008},
@@ -229,49 +384,49 @@ function initMap() {
                 },
                 fullscreenControl: true
             });
-  }
-  catch(error) {
-      alert("google map could not be loaded due to " + error);
-  }
+        }
+    catch(error) {
+        alert("google map could not be loaded due to " + error);
+    }
 
 
-  var ViewModel = function() {
+    var ViewModel = function() {
 
-      var self = this;
+        let self = this;
 
-      // Code for localStorage/sessionStorage.
-      if (storageAvailable('localStorage'))  {
-          // check if there is a filter saved from previous sessionStorage
-          if (window.localStorage.getItem("filter") !== null) {
-              this.filter = ko.observable(window.localStorage.getItem("filter"));
-          }
-          else {
-              this.filter = ko.observable("");
-          }
-      }
-      else {
-          this.filter = ko.observable("");
-      }
+        // Code for localStorage/sessionStorage.
+        if (storageAvailable('localStorage'))  {
+            // check if there is a filter saved from previous sessionStorage
+            if (window.localStorage.getItem("filter") !== null) {
+                this.filter = ko.observable(window.localStorage.getItem("filter"));
+            }
+            else {
+                this.filter = ko.observable("");
+            }
+        }
+        else {
+            this.filter = ko.observable("");
+        }
 
-      // Style the markers. This will be our listing marker icon.
-      var defaultIcon = makeMarkerIcon('0091ff');
+        // Style the markers. This will be our listing marker icon.
+        let defaultIcon = makeMarkerIcon('0091ff');
 
-      // Create a "highlighted location" marker color for when the user
-      // mouses over the marker.
-      var highlightedIcon = makeMarkerIcon('FFFF24');
+        // Create a "highlighted location" marker color for when the user
+        // mouses over the marker.
+        let highlightedIcon = makeMarkerIcon('FFFF24');
 
-      var largeInfowindow = new google.maps.InfoWindow();
+        let infowindow = new google.maps.InfoWindow();
 
-      initialLocations.forEach(function(item, i) {
+        initialLocations.forEach(function(item, i) {
 
-          // Get the position from the location array.
-          var position = item.location;
-          var title = item.title;
-          var venueId = item.venueId;
+            // Get the position from the location array.
+            let position = item.location;
+            let title = item.title;
+            let venueId = item.venueId;
 
-          // Create a marker per location, and put ino markers array.
-          try {
-              var marker = new google.maps.Marker({
+            // Create a marker per location, and put ino markers array.
+            try {
+                let marker = new google.maps.Marker({
                     position: position,
                     title: title,
                     icon: defaultIcon,
@@ -287,9 +442,9 @@ function initMap() {
                 // Push the marker to our array of markers.
                 all_markers.push(marker);
 
-                // Create an onclick event to open the large infowindow at each marker.
+                // Create an onclick event to open the infowindow at each marker.
                 marker.addListener('click', function() {
-                    populateInfoWindow(this, largeInfowindow);
+                    populateInfoWindow(this, infowindow);
                 });
 
                 // Two event listeners - one for mouseover, one for mouseout,
@@ -307,84 +462,83 @@ function initMap() {
             }
   });
 
-// the locations on display in list will be computed based on what the current filter is.
-this.locations = ko.computed(function() {
-    var filter = self.filter().toLowerCase();
-    if (storageAvailable('localStorage'))  {
-        // Save the filter that will be used for display on the ui.
-        window.localStorage.setItem("filter", filter);
-    }
-    if (!filter) {
-          return initialLocations;
-    } else {
-        var filtered_results = [];
-        initialLocations.forEach(function(location) {
-            if (location.title.toLowerCase().startsWith(filter)) {
-                filtered_results.push(location);
-            }
-        });
-        return filtered_results;
-    }
-});
-
-// This function populates the infowindow when the marker is clicked. We'll only allow
-// one infowindow which will open at the marker that is clicked, and populate based
-// on that markers position.
-function populateInfoWindow(marker, infowindow) {
-    // Check to make sure the infowindow is not already opened on this marker.
-    if (infowindow.marker != marker) {
-
-        infowindow.marker = marker;
-        // Make sure the marker property is cleared if the infowindow is closed.
-        infowindow.addListener('closeclick', function() {
-            infowindow.marker = null;
-        });
-        var content = "";
-        if (marker.infoWindowData) {
-            var website_url = marker.infoWindowData.response.venue.url;
-            var phone_number = marker.infoWindowData.response.venue.contact.formattedPhone;
-            var street = marker.infoWindowData.response.venue.location.address;
-            var city = marker.infoWindowData.response.venue.location.city;
-            var state = marker.infoWindowData.response.venue.location.state;
-            var postalCode = marker.infoWindowData.response.venue.location.postalCode;
-            var country = marker.infoWindowData.response.venue.location.country;
-
-            if (!website_url) {
-                website_url = marker.infoWindowData.response.venue.canonicalUrl;
-            }
-
-            if (!phone_number) {
-                phone_number = "Phone number not found.";
-            }
-
-            content = '<div id="title">' + marker.title +
-                      '</div><div><span class="label">Website:&nbsp;</span><span><a class="bold" href="' +
-                      website_url +'">' + website_url + '</a></span></div>' +
-                      '<p><span class="label">Phone Number:&nbsp;</span><span>' + phone_number + '</span></p>' +
-                      '<p class="label">Address:</p>' +
-                      '<p class="address">'+ street + '</p>' +
-                      '<p class="address">' + city + ', ' + state + ' ' + postalCode + '</p>' +
-                      '<p class="address">'+ country + '</p>';
-        }
-        else {
-            content = '<div id="title">' + marker.title + '</div><div>Could not load additional data from foursquare.</div>';
-        }
-
-        infowindow.setContent(content);
-        infowindow.open(map, marker);
+  // the locations on display in list will be computed based on what the current filter is.
+  this.locations = ko.computed(function() {
+      let filter = self.filter().toLowerCase();
+      if (storageAvailable('localStorage'))  {
+          // Save the filter that will be used for display on the ui.
+          window.localStorage.setItem("filter", filter);
       }
-  }
+      if (!filter) {
+            return initialLocations;
+      }
+      else {
+          let filtered_results = [];
+          initialLocations.forEach(function(location) {
+              if (location.title.toLowerCase().startsWith(filter)) {
+                  filtered_results.push(location);
+              }
+          });
+          return filtered_results;
+      }
+    });
 
-  this.openMarkerInfoWindow = function(location) {
-      var currentMarker = getMarker(all_markers, location.title);
-      populateInfoWindow(currentMarker, largeInfowindow);
-  };
+    /* This function populates the infowindow when the marker is clicked. We'll only allow
+    one infowindow which will open at the marker that is clicked, and populate based
+    on that markers position. */
+    function populateInfoWindow(marker, infowindow) {
+        // Check to make sure the infowindow is not already opened on this marker.
+        if (infowindow.marker != marker) {
 
+            infowindow.marker = marker;
+            // Make sure the marker property is cleared if the infowindow is closed.
+            infowindow.addListener('closeclick', function() {
+                infowindow.marker = null;
+            });
+            let content = "";
+            if (marker.infoWindowData) {
+                let website_url = marker.infoWindowData.response.venue.url;
+                let phone_number = marker.infoWindowData.response.venue.contact.formattedPhone;
+                let street = marker.infoWindowData.response.venue.location.address;
+                let city = marker.infoWindowData.response.venue.location.city;
+                let state = marker.infoWindowData.response.venue.location.state;
+                let postalCode = marker.infoWindowData.response.venue.location.postalCode;
+                let country = marker.infoWindowData.response.venue.location.country;
 
-};
+                    if (!website_url) {
+                        website_url = marker.infoWindowData.response.venue.canonicalUrl;
+                    }
 
-var view_model = new ViewModel();
-showMarkers(all_markers);
-ko.applyBindings(view_model);
+                    if (!phone_number) {
+                        phone_number = "Phone number not found.";
+                    }
 
+                    content = '<div id="title">' + marker.title +
+                        '</div><div><span class="label">Website:&nbsp;</span><span><a class="bold" href="' +
+                        website_url +'">' + website_url + '</a></span></div>' +
+                        '<p><span class="label">Phone Number:&nbsp;</span><span>' + phone_number + '</span></p>' +
+                        '<p class="label">Address:</p>' +
+                        '<p class="address">'+ street + '</p>' +
+                        '<p class="address">' + city + ', ' + state + ' ' + postalCode + '</p>' +
+                        '<p class="address">'+ country + '</p>';
+                }
+                else {
+                    content = '<div id="title">' + marker.title + '</div><div>Could not load additional data from foursquare.</div>';
+                }
+
+                infowindow.setContent(content);
+                infowindow.open(map, marker);
+            }
+        }
+
+        this.openMarkerInfoWindow = function(location) {
+            let currentMarker = getMarker(all_markers, location.title);
+            populateInfoWindow(currentMarker, infowindow);
+        };
+
+    };
+
+    let view_model = new ViewModel();
+    showMarkers(all_markers);
+    ko.applyBindings(view_model);
 }
