@@ -14,13 +14,13 @@
   <body>
   	<div class="container">
   	  <div class="header">
-  	  		<span class="hamburger" onclick="toggleDisplaySettings()">&#9776;</span>
+  	  		<span class="hamburger" data-bind="click: toggleDisplaySettings()" >&#9776;</span>
       		<span class="header-title">My Neighborhood Map</span>
       </div>
 
       <div id="listView">
 
-      	<input id="filterInput" data-bind="value: filter, valueUpdate='keyup'" onchange="updateMarkers()" placeholder="Filter for names.." title="Type in a name">
+      	<input id="filterInput" data-bind="textInput: filter" placeholder="Filter for names.." title="Type in a name">
 
       	<div>
         	<ul id="myUL" data-bind="foreach: locations">
@@ -41,7 +41,7 @@
 	<script src="js/script.js"></script>
 
   	<!-- Load the JS API ASYNCHRONOUSLY below.-->
-    <script async defer
+    <script async defer onerror="handleScriptError()"
         src="https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&key=AIzaSyDAdBKCDHqXmSsJvPAKSR7N7Tuhtogr2VQ&v=3&callback=initMap">
     </script>
 

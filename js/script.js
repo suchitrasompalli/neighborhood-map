@@ -11,7 +11,7 @@
 
 // Create a map variable
 let map;
-const all_markers = [];
+const allMarkers = [];
 
 
 // This function will loop through any markers array and display them all.
@@ -35,16 +35,15 @@ function hideMarkers(markers) {
 
 /* This function will apply the filter to the list of markers and update the map
  with the new list of mappers. */
-function updateMarkers() {
-    hideMarkers(all_markers);
-    let value = document.getElementById("filterInput").value;
+function updateMarkers(filter) {
+    hideMarkers(allMarkers);
     let currentMarkers = [];
-    let filter = value.toLowerCase();
+    filter = filter.toLowerCase();
     if(!filter) {
-        currentMarkers = all_markers;
+        currentMarkers = allMarkers;
     } else {
-        all_markers.forEach(function(marker) {
-            if (marker.title.toLowerCase().startsWith(filter)) {
+        allMarkers.forEach(function(marker) {
+            if (marker.title.toLowerCase().includes(filter)) {
                 currentMarkers.push(marker);
             }
         });
@@ -138,6 +137,11 @@ function storageAvailable(type) {
     catch(e) {
         return false;
     }
+}
+
+// handles any script tag error while loading google maps api.
+function handleScriptError() {
+    alert("Error in loading Google Maps api");
 }
 
 // Call back function that inititializes the map with Coppell, Dallas as center.
@@ -440,7 +444,7 @@ function initMap() {
                 getFourSquareData(marker);
 
                 // Push the marker to our array of markers.
-                all_markers.push(marker);
+                allMarkers.push(marker);
 
                 // Create an onclick event to open the infowindow at each marker.
                 marker.addListener('click', function() {
@@ -469,13 +473,15 @@ function initMap() {
           // Save the filter that will be used for display on the ui.
           window.localStorage.setItem("filter", filter);
       }
+      // first update markers based on the filter provided.
+      updateMarkers(filter);
       if (!filter) {
             return initialLocations;
       }
       else {
           let filtered_results = [];
           initialLocations.forEach(function(location) {
-              if (location.title.toLowerCase().startsWith(filter)) {
+              if (location.title.toLowerCase().includes(filter)) {
                   filtered_results.push(location);
               }
           });
@@ -527,18 +533,19 @@ function initMap() {
                 }
 
                 infowindow.setContent(content);
+                toggleBounce(marker, 4);
                 infowindow.open(map, marker);
             }
         }
 
         this.openMarkerInfoWindow = function(location) {
-            let currentMarker = getMarker(all_markers, location.title);
+            let currentMarker = getMarker(allMarkers, location.title);
             populateInfoWindow(currentMarker, infowindow);
         };
 
     };
 
     let view_model = new ViewModel();
-    showMarkers(all_markers);
+    showMarkers(allMarkers);
     ko.applyBindings(view_model);
 }
