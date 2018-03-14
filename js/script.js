@@ -398,6 +398,9 @@ function initMap() {
 
         let self = this;
 
+        // Clicking on Hamburger icon changes the display, toggles between hiding and showing of list view.
+        this.shouldShowListView = ko.observable(true);
+
         // Code for localStorage/sessionStorage.
         if (storageAvailable('localStorage'))  {
             // check if there is a filter saved from previous sessionStorage
@@ -546,13 +549,23 @@ function initMap() {
             populateInfoWindow(currentMarker, infowindow);
         };
 
-        this.toggleDisplaySettings = function() {
-
+        //
+        this.toggleDisplay = function() {
+            if (self.shouldShowListView())
+                self.shouldShowListView(false);
+            else
+                self.shouldShowListView(true);
         };
 
     };
 
-    let view_model = new ViewModel();
+    let viewModel = new ViewModel();
     showMarkers(allMarkers);
-    ko.applyBindings(view_model);
+
+    // when list view is been displayed in ui, display map with a left margin.
+    viewModel.mapMargin = ko.pureComputed(function() {
+        return this.shouldShowListView() ? "map-margin-default" : "map-margin-full";
+    }, viewModel);
+
+    ko.applyBindings(viewModel);
 }

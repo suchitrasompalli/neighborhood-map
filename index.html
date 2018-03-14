@@ -13,15 +13,15 @@
   </head>
   <body>
   	<div class="container">
+
   	  <div class="header">
-  	  		<span class="hamburger" data-bind="click: toggleDisplaySettings()" >&#9776;</span>
+  	  		<span class="hamburger" data-bind="click: toggleDisplay">&#9776;</span>
       		<span class="header-title">My Neighborhood Map</span>
       </div>
 
-      <div id="listView">
+      <div id="listView" data-bind="visible: shouldShowListView">
 
       	<input id="filterInput" data-bind="textInput: filter" placeholder="Filter for names.." title="Type in a name">
-
       	<div>
         	<ul id="myUL" data-bind="foreach: locations">
             	<li><button data-bind="text: $data.title, click: $parent.openMarkerInfoWindow"></button></li>
@@ -30,7 +30,7 @@
       </div>
 
   	  <!-- A place for map. -->
-  	  <div id="map" class="map-margin-default"></div>
+  	  <div id="map" data-bind="css: mapMargin"></div>
 
 
   	</div>
