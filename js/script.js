@@ -501,46 +501,53 @@ function initMap() {
             infowindow.addListener('closeclick', function() {
                 infowindow.marker = null;
             });
+
             let content = "";
+
             if (marker.infoWindowData) {
-                let website_url = marker.infoWindowData.response.venue.url;
-                let phone_number = marker.infoWindowData.response.venue.contact.formattedPhone;
-                let street = marker.infoWindowData.response.venue.location.address;
-                let city = marker.infoWindowData.response.venue.location.city;
-                let state = marker.infoWindowData.response.venue.location.state;
-                let postalCode = marker.infoWindowData.response.venue.location.postalCode;
-                let country = marker.infoWindowData.response.venue.location.country;
 
-                    if (!website_url) {
-                        website_url = marker.infoWindowData.response.venue.canonicalUrl;
-                    }
+                let venue = marker.infoWindowData.response.venue;
 
-                    if (!phone_number) {
-                        phone_number = "Phone number not found.";
-                    }
+                let website_url = venue.url ? venue.url: venue.canonicalUrl;
+                let phone_number = venue.contact.formattedPhone ? venue.contact.formattedPhone : "Phone number not found.";
+                let street = venue.location.address;
+                let city = venue.location.city;
+                let state = venue.location.state;
+                let postalCode = venue.location.postalCode;
+                let country = venue.location.country;
 
-                    content = '<div id="title">' + marker.title +
-                        '</div><div><span class="label">Website:&nbsp;</span><span><a class="bold" href="' +
-                        website_url +'">' + website_url + '</a></span></div>' +
-                        '<p><span class="label">Phone Number:&nbsp;</span><span>' + phone_number + '</span></p>' +
-                        '<p class="label">Address:</p>' +
-                        '<p class="address">'+ street + '</p>' +
-                        '<p class="address">' + city + ', ' + state + ' ' + postalCode + '</p>' +
-                        '<p class="address">'+ country + '</p>';
-                }
-                else {
-                    content = '<div id="title">' + marker.title + '</div><div>Could not load additional data from foursquare.</div>';
-                }
-
-                infowindow.setContent(content);
-                toggleBounce(marker, 4);
-                infowindow.open(map, marker);
+                content = `<div id="title">${marker.title}</div>
+                           <div>
+                                <span class="label">Website: </span>
+                                <span><a class="bold" href="${website_url}">${website_url}</a></span>
+                            </div>
+                            <p>
+                               <span class="label">Phone Number: </span>
+                               <span>${phone_number}</span>
+                            </p>
+                            <p class="label">Address:</p>
+                            <p class="address">${street}</p>
+                            <p class="address">${city}, ${state} ${postalCode}</p>
+                            <p class="address">${country}</p>`;
             }
+            else {
+                    content = `<div id="title">${marker.title}</div>
+                                <div>Could not load additional data from foursquare.</div>`;
+            }
+
+            infowindow.setContent(content);
+            toggleBounce(marker, 4);
+            infowindow.open(map, marker);
         }
+    }
 
         this.openMarkerInfoWindow = function(location) {
             let currentMarker = getMarker(allMarkers, location.title);
             populateInfoWindow(currentMarker, infowindow);
+        };
+
+        this.toggleDisplaySettings = function() {
+
         };
 
     };
