@@ -52,7 +52,6 @@ button {
 }
 #listView {
 	position:absolute;
-	//display: block;
 	z-index: 1;
     background: #999999;
     border: 1px solid #999;
