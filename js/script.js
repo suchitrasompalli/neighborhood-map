@@ -18,19 +18,19 @@ const allMarkers = [];
 function showMarkers(markers) {
     let bounds = new google.maps.LatLngBounds();
     // Extend the boundaries of the map for each marker and display the marker
-    for (let i = 0; i < markers.length; i++) {
-        markers[i].setMap(map);
-        toggleBounce(markers[i], 4);
-        bounds.extend(markers[i].position);
-    }
+    markers.forEach(function(marker) {
+        marker.setMap(map);
+        toggleBounce(marker, 4);
+        bounds.extend(marker.position);
+    });
     map.fitBounds(bounds);
 }
 
 // This function will loop through markers and hide them all.
 function hideMarkers(markers) {
-    for (let i = 0; i < markers.length; i++) {
-          markers[i].setMap(null);
-    }
+    markers.forEach(function(marker) {
+        marker.setMap(null);
+    });
 }
 
 /* This function will apply the filter to the list of markers and update the map
@@ -104,24 +104,9 @@ function getFourSquareData(marker) {
         dataType: "json"
     }).done(function(data) {
         marker.infoWindowData = data;
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function(textStatus) {
         alert("Failed to get data from foursquare for "+ marker.title + " due to " +textStatus);
     });
-}
-
-// When the hamburger icon is clicked on the UI, hide/display the list view and also change the map left margin.
-function toggleDisplaySettings() {
-    let view = document.getElementById('listView');
-    if (view.style.display === "none") {
-        view.style.display = "block";
-        $("#map").removeClass("map-margin-full");
-        $("#map").addClass("map-margin-default");
-    }
-    else {
-        view.style.display = "none";
-        $("#map").removeClass("map-margin-default");
-        $("#map").addClass("map-margin-full");
-    }
 }
 
 // Checks if storage (localStorage or SessionStorage) is available to use.
@@ -405,14 +390,14 @@ function initMap() {
         if (storageAvailable('localStorage'))  {
             // check if there is a filter saved from previous sessionStorage
             if (window.localStorage.getItem("filter") !== null) {
-                this.filter = ko.observable(window.localStorage.getItem("filter"));
+                self.filter = ko.observable(window.localStorage.getItem("filter"));
             }
             else {
-                this.filter = ko.observable("");
+                self.filter = ko.observable("");
             }
         }
         else {
-            this.filter = ko.observable("");
+            self.filter = ko.observable("");
         }
 
         // Style the markers. This will be our listing marker icon.
@@ -511,8 +496,8 @@ function initMap() {
 
                 let venue = marker.infoWindowData.response.venue;
 
-                let website_url = venue.url ? venue.url: venue.canonicalUrl;
-                let phone_number = venue.contact.formattedPhone ? venue.contact.formattedPhone : "Phone number not found.";
+                let website_url = venue.url || venue.canonicalUrl;
+                let phone_number = venue.contact.formattedPhone || "Phone number not found.";
                 let street = venue.location.address;
                 let city = venue.location.city;
                 let state = venue.location.state;
@@ -549,12 +534,9 @@ function initMap() {
             populateInfoWindow(currentMarker, infowindow);
         };
 
-        //
+        // change display of listview.
         this.toggleDisplay = function() {
-            if (self.shouldShowListView())
-                self.shouldShowListView(false);
-            else
-                self.shouldShowListView(true);
+            self.shouldShowListView(!self.shouldShowListView());
         };
 
     };
