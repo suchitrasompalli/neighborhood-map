@@ -2,6 +2,7 @@
     box-sizing: border-box;
 
 }
+
 html, body
 {
 	font-family: Arial, sans-serif;
@@ -20,6 +21,7 @@ button {
 	color: blue;
 	text-align: left!important;
 }
+
 .container {
 	margin-top:0px;
  	height: 100%;
@@ -29,6 +31,7 @@ button {
     overflow-x:hidden;
     overflow-y:auto;
 }
+
 .header {
 	color: blue;
 	font-weight: bolder;
@@ -38,11 +41,13 @@ button {
 	height:60px;
     width:100%;
 }
+
 .header-title {
 	margin-left: 40%;
 	padding-top:10px;
 	margin-bottom:10px;
 }
+
 .hamburger {
 	margin-left:1vw;
 	font-size:30px;
@@ -50,6 +55,7 @@ button {
 	padding-top:10px;
 	margin-bottom:10px;
 }
+
 #listView {
 	position:absolute;
 	z-index: 1;
@@ -64,6 +70,7 @@ button {
     float:left;
     overflow-x: hidden;
 }
+
 .address {
 	margin-left: 2vw;
 }
@@ -80,10 +87,12 @@ button {
   margin-top: 2vw;
   margin-bottom: 12px;
 }
+
 #pano {
     width: 200px;
     height: 200px;
 }
+
 #myUL {
   list-style-type: none;
   padding: 0;
@@ -98,7 +107,6 @@ button {
   font-weight: bold;
   word-spacing: 1px;
   margin-top: -1px;
-
 }
 
 #myUL li a:hover:not(.header) {
@@ -113,11 +121,12 @@ button {
    margin-bottom: 5px;
    border-top: 1px solid #999;
    border-bottom: 1px solid #999;
-
 }
+
 .map-margin-default {
      margin-left:350px;
 }
+
 .map-margin-full {
     margin-left: 0px;
 }
@@ -130,6 +139,7 @@ button {
 	text-align: center;
 	margin-bottom: 1vw;
 }
+
 .label {
 	color: blue;
 	font-weight: bold;
@@ -138,14 +148,17 @@ button {
 .bold {
 	font-weight: bold;
 }
+
 .gm-style-iw {
 	background-color: #F0F8FF;
 	margin:0px;
 	padding:0px;
 }
+
 p {
 	font-weight: bold;
 }
+
 .footer {
 	text-align:center;
 	color: blue;
@@ -158,6 +171,7 @@ p {
 		margin-left: 5%;
         font-size:20px;
 	}
+
     #myUL li {
       border: 1px solid #ddd;
       background-color: #f6f6f6;
@@ -165,7 +179,5 @@ p {
       font-weight: bold;
       word-spacing: 1px;
       margin-top: -1px;
-
     }
-
 }
