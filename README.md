@@ -27,9 +27,11 @@ Knockout and jQuery javascript libraries are used.
 
 * Code was written to handle localStorage unavailability in Internet Explorer (affects some Internet Explorers due to user settings.)
 
- 1. <https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API>
+    1. <https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API>
 
- 2. <https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8816771/>
+    2. <https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8816771/>
 
 * Snazzy maps
-  1. <https://snazzymaps.com/editor/customize/25>
+  <https://snazzymaps.com/editor/customize/25>
+* Geeks with blogs
+   <http://geekswithblogs.net/nharrison/archive/2013/03/19/4-simple-css-tricks-to-make-web-input-fields-look.aspx>

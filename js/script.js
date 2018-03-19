@@ -6,7 +6,7 @@
     {title: 'Cici\'s Pizza', location: {lat: 32.968356, lng: -96.991926}, venueId: '4ba11085f964a520359437e3'},
     {title: 'Walgreens', location: {lat: 32.977036, lng: -96.994309}, venueId: '4bec8b1675b2c9b662ab438d'},
     {title: 'Sprouts supermarket', location: {lat: 32.970312, lng: -96.995428}, venueId: '4b993ac8f964a520ba6b35e3'},
-    {title: 'Cottonwood Creek Elementary School', location: {lat: 32.9764, lng: -97.0074}, venueId: '4c61a20279d1e21ea72fd415'}
+    {title: 'Cottonwood Creek Elementary', location: {lat: 32.9764, lng: -97.0074}, venueId: '4c61a20279d1e21ea72fd415'}
 ];
 
 // Create a map variable

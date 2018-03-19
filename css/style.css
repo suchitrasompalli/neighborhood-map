@@ -13,7 +13,10 @@ html, body
 }
 
 button {
-	border:1px solid #ddd;
+	border-bottom:1px solid #ddd;
+    border-right:0px;
+    border-top:0px;
+    border-left:0px;
 	font:inherit;
 	cursor:pointer;
 	width: 100%;
@@ -79,13 +82,19 @@ button {
   background-image: url('filter.png');
   background-position: 290px 12px;
   background-repeat: no-repeat;
+  background-color: #eee;
   width: 99%;
   font-size: 20px;
   color:blue;
   padding: 12px 20px 12px 40px;
   border: 1px solid #ddd;
+  border-radius:.5em;
   margin-top: 2vw;
   margin-bottom: 12px;
+}
+
+.button-text {
+    margin-left: .5em;
 }
 
 #pano {
@@ -93,20 +102,27 @@ button {
     height: 200px;
 }
 
+.div-list {
+    border: 1px solid #ddd;
+    border-radius:.5em;
+    background-color: #f6f6f6;
+}
+
 #myUL {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  width: 99%;
+    //border: 1px solid #ddd;
+    //border-radius:.5em;
+    list-style-type: none;
+    background-color: #f6f6f6;
+    padding: 0;
+    margin: 0;
+    width: 99%;
 }
 
 #myUL li {
-  border: 1px solid #ddd;
   background-color: #f6f6f6;
   font-size: 20px;
   font-weight: bold;
   word-spacing: 1px;
-  margin-top: -1px;
 }
 
 #myUL li a:hover:not(.header) {
