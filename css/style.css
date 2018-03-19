@@ -125,7 +125,7 @@ button {
   word-spacing: 1px;
 }
 
-#myUL li a:hover:not(.header) {
+#myUL li a:hover {
   background-color: #eee;
 }
 
